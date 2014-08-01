@@ -5,14 +5,14 @@ import RPi.GPIO as GPIO
 
 COMMAND_CLEAR = 0x01
 COMMAND_HOME = 0x02
-COMMAND_SET_DISPLAY_MODE = 0x80
+COMMAND_SET_DISPLAY_MODE = 0b00001000
 
-BLINK_ON = 0x01
-CURSOR_ON  = 0x02
-DISPLAY_ON = 0x04
+BLINK_ON = 0b00000001
+CURSOR_ON  = 0b00000010
+DISPLAY_ON = 0b00000100
 
 class st7036():
-    def __init__(self, register_select_pin, rows=3, cols=16, spi_chip_select=0, instruction_set_template=0b00111000):
+    def __init__(self, register_select_pin, rows=3, columns=16, spi_chip_select=0, instruction_set_template=0b00111000):
         GPIO.setmode(GPIO.BCM)
         GPIO.setwarnings(False)
 
@@ -20,9 +20,9 @@ class st7036():
         self.spi.open(0, spi_chip_select)
         self.spi.max_speed_hz = 1000000
 
-        self.line_offsets = ([0x00], [0x00, 0x40], [0x00, 0x10, 0x20])[rows - 1]
+        self.row_offsets = ([0x00], [0x00, 0x40], [0x00, 0x10, 0x20])[rows - 1]
         self.rows = rows
-        self.cols = cols
+        self.columns = columns
 
         GPIO.setup(register_select_pin, GPIO.OUT)
         GPIO.output(register_select_pin, GPIO.HIGH)
@@ -74,19 +74,34 @@ class st7036():
             cursor (boolean): show cursor
             blink (boolean): blink cursor (if shown)
         """            
-        mask  = DISPLAY_ON if enable == True else 0
+        mask  = COMMAND_SET_DISPLAY_MODE
+        mask |= DISPLAY_ON if enable == True else 0
         mask |= CURSOR_ON if cursor == True else 0
         mask |= BLINK_ON if blink == True else 0      
-        #self._write_command(COMMAND_SET_DISPLAY_MODE | mask)
-        self._write_command(0x08 | 0x04 | 0x02 | 0x01)
+        self._write_command(mask)
 
-    def set_cursor_position(self, offset):
+    def set_cursor_offset(self, offset):
         """ 
         Sets the cursor position in DRAM
 
         Args:
             offset (int): DRAM offset to place cursor
         """            
+        self._write_command(0b10000000 | offset)
+
+    def set_cursor_position(self, row, column):
+        """ 
+        Sets the cursor position in DRAM based on
+        a row and column offset
+
+        Args:
+            offset (int): DRAM offset to place cursor
+        """
+        if row not in range(self.rows) or column not in range(self.columns):
+            raise ValueError( "row and column must integers within the defined screen size")
+
+        offset = self.row_offsets[row] + column
+
         self._write_command(0b10000000 | offset)
 
     def clear(self):
@@ -101,11 +116,12 @@ class st7036():
 
         Args:
             value (string): The string to write
-        """            
+        """
         GPIO.output(self.register_select_pin, GPIO.HIGH)
 
         for i in [ord(char) for char in value]:
             self.spi.xfer([i])
+            time.sleep(0.00005)
         
 
     def _write_command(self, value, instruction_set=0):
@@ -114,56 +130,64 @@ class st7036():
         # select correct instruction set
         self.spi.xfer([self.instruction_set_template | instruction_set])
 
-        time.sleep(0.00001)
+        time.sleep(0.00005)
 
         # switch to command-mode
         self.spi.xfer([value])
 
-        time.sleep(0.00001)
+        time.sleep(0.00005)
 
 if __name__ == "__main__":
     print "st7036 test cycles"
     
-    import time, sys, os, math
+    import time, sys, os, math, random
 
     # disable output buffering for our test activity dots
     sys.stdout = os.fdopen(sys.stdout.fileno(), 'w', 0)
 
-    lcd = st7036(register_select_pin=25)
+    lcd = st7036(register_select_pin=25, rows=3, columns=16)
     lcd.set_display_mode()
     lcd.set_contrast(40)
     lcd.clear()
 
-    # for i in range(48):
-    #     lcd.set_cursor_position(i)
-    #     time.sleep(.1)
-    #     lcd.write(chr(i+65))
-    #     time.sleep(.1)
-
-
-
     print ">> fill screen"
-    lcd.set_cursor_position(0x00)
-    lcd.write("a" * 48)
-    time.sleep(2)
-    lcd.clear()
+    for i in range(48):
+        lcd.set_cursor_offset(i)
+        time.sleep(.05)
+        lcd.write(chr(i+65))
+        time.sleep(.02)        
 
     print ">> cycle character set"
-    for i in range(256 - 48):
-        lcd.set_cursor_position(0x00)
-        lcd.write("".join([chr(i + j) for j in range(48)]))
-        time.sleep(.1)
+    for i in range(256 - 48 - 65):
+        lcd.set_cursor_offset(0x00)
+        lcd.write("".join([chr(i + j + 65) for j in range(48)]))
+        time.sleep(.02)
         lcd.clear()
+    lcd.clear()
 
     print ">> test contrast range"
-    lcd.set_cursor_position(0x10)
+    lcd.set_cursor_offset(0x10)
     lcd.write("test contrast")
     for i in range(0x40):                
         lcd.set_contrast(i)
-        time.sleep(0.025)
+        time.sleep(0.02)
+    for i in reversed(range(0x40)):                
+        lcd.set_contrast(i)
+        time.sleep(0.02)
+    lcd.set_contrast(40)
     lcd.clear()
 
-    lcd.set_contrast(40)
+    print ">> test set cursor position"
+    for i in range(50):
+        row = random.randint(0, 3 - 1)
+        column = random.randint(0, 16 - 1)
+
+        lcd.set_cursor_position(row, column)
+        lcd.write(chr(0b01101111))
+        time.sleep(.10)  
+        lcd.set_cursor_position(row, column)
+        lcd.write(" ")
+    
 
 
 
