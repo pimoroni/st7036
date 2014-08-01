@@ -89,13 +89,16 @@ class st7036():
         """            
         self._write_command(0b10000000 | offset)
 
-    def set_cursor_position(self, row, column):
+    def set_cursor_position(self, column, row):
         """ 
         Sets the cursor position in DRAM based on
         a row and column offset
 
         Args:
-            offset (int): DRAM offset to place cursor
+            column (int): column to move the cursor to
+            row (int): row to move the cursor to
+       Raises:
+            ValueError: if row and column are not within defined screen size
         """
         if row not in range(self.rows) or column not in range(self.columns):
             raise ValueError( "row and column must integers within the defined screen size")
