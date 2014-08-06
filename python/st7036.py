@@ -30,6 +30,8 @@ class st7036():
         self.register_select_pin = register_select_pin
         self.instruction_set_template = instruction_set_template
 
+        self.animations = []*8
+
         self.set_display_mode()
 
         # set entry mode (no shift, cursor direction)        
@@ -126,6 +128,36 @@ class st7036():
             self.spi.xfer([i])
             time.sleep(0.00005)
         
+    def create_animation(self, anim_pos, anim_map, frame_rate):
+        self.create_char(anim_pos, anim_map[0])
+        self.animations[anim_pos] = [anim_map,frame_rate]
+        self.set_cursor_position(0,1)
+
+    def update_animations(self):
+        for i,animation in enumerate(self.animations):
+            if len(animation) == 2:
+                anim = animation[0]
+                fps = animation[1]
+                frame = anim[ int(round(time.time()*fps) % len(anim)) ]
+                self.create_char(i,frame)
+        self.set_cursor_position(0,1)
+
+    def create_char(self, char_pos, char_map):
+        if(char_pos<0 or char_pos>7):
+            return False
+
+        baseAddress = char_pos*8
+        for i in range(0,8):
+            self._write_command((0x40|(baseAddress+i)))
+            self._write_char(char_map[i])
+
+        self.set_display_mode()
+
+    def _write_char(self, value):
+        GPIO.output(self.register_select_pin, GPIO.HIGH)
+        self.spi.xfer([value])
+
+        time.sleep(0.00005)
 
     def _write_command(self, value, instruction_set=0):
         GPIO.output(self.register_select_pin, GPIO.LOW)
@@ -236,30 +268,3 @@ if __name__ == "__main__":
 
 # def doubleHeightBottom(self):
 #     self.writeCommand(0b00010000,30)
-
-# def createAnimation(self, anim_pos, anim_map, frame_rate):
-#     self.createChar(anim_pos, anim_map[0])
-#     self.animations[anim_pos] = [anim_map,frame_rate]
-#     self.setCursor(0,1)
-
-# def updateAnimations(self):
-#     for i,animation in enumerate(self.animations):
-#         if len(animation) == 2:
-#             anim = animation[0]
-#             fps = animation[1]
-#             frame = anim[ int(round(time.time()*fps) % len(anim)) ]
-#             self.createChar(i,frame)
-#     self.setCursor(0,1)
-
-# def createChar(self, char_pos, char_map):
-#     if(char_pos<0 or char_pos>7):
-#         return False
-
-#     baseAddress = char_pos*8
-#     self.setInstructionSet(0)
-#     for i in range(0,8):
-#         self.writeCommand((0x40|(baseAddress+i)),30)
-#         self.writeChar(char_map[i])
-#     self.setInstructionSet(0)
-#     self.writeDisplayMode()
-
