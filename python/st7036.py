@@ -109,11 +109,18 @@ class st7036():
 
         self._write_command(0b10000000 | offset)
 
+    def home(self):
+        """
+        Sets the cursor position to 0,0
+        """
+        self.set_cursor_position(0,0)
+
     def clear(self):
         """ 
         Clears the display and resets the cursor.
         """            
         self._write_command(COMMAND_CLEAR)
+        self.home()
 
     def write(self, value):
         """ 
@@ -157,7 +164,7 @@ class st7036():
         GPIO.output(self.register_select_pin, GPIO.HIGH)
         self.spi.xfer([value])
 
-        time.sleep(0.00005)
+        time.sleep(0.0001) #0.00005
 
     def _write_command(self, value, instruction_set=0):
         GPIO.output(self.register_select_pin, GPIO.LOW)

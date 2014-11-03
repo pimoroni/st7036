@@ -33,7 +33,7 @@ classifiers = ['Development Status :: 4 - Beta',
                'Topic :: System :: Hardware']
 
 setup(name		= 'st7036',
-	version		= '1.0dev',
+	version		= '1.2dev',
 	author		= 'Jonathan Williamson',
 	author_email	= 'jon@pimoroni.com',
 	description	= 'Raspberry Pi ST7036 SPI Driver',

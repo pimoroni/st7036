@@ -1,6 +1,15 @@
 Change Log
 ==========
 
+1.2dev
+------
+- Added "home" to reset cursor position
+- Call "home" after "clear"
+
+1.1dev
+------
+- Animation/custom char suport
+
 1.0dev
 ------
 - Initial Release
