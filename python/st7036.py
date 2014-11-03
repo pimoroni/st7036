@@ -173,7 +173,7 @@ class st7036():
         time.sleep(0.00005)
 
 if __name__ == "__main__":
-    print "st7036 test cycles"
+    print("st7036 test cycles")
     
     import time, sys, os, math, random
 
@@ -185,14 +185,14 @@ if __name__ == "__main__":
     lcd.set_contrast(40)
     lcd.clear()
 
-    print ">> fill screen"
+    print(">> fill screen")
     for i in range(48):
         lcd.set_cursor_offset(i)
         time.sleep(.05)
         lcd.write(chr(i+65))
         time.sleep(.02)        
 
-    print ">> cycle character set"
+    print(">> cycle character set")
     for i in range(256 - 48 - 65):
         lcd.set_cursor_offset(0x00)
         lcd.write("".join([chr(i + j + 65) for j in range(48)]))
@@ -200,7 +200,7 @@ if __name__ == "__main__":
         lcd.clear()
     lcd.clear()
 
-    print ">> test contrast range"
+    print(">> test contrast range")
     lcd.set_cursor_offset(0x10)
     lcd.write("test contrast")
     for i in range(0x40):                
@@ -212,7 +212,7 @@ if __name__ == "__main__":
     lcd.set_contrast(40)
     lcd.clear()
 
-    print ">> test set cursor position"
+    print(">> test set cursor position")
     for i in range(50):
         row = random.randint(0, 3 - 1)
         column = random.randint(0, 16 - 1)

@@ -1,6 +1,10 @@
 Change Log
 ==========
 
+1.1dev
+------
+- Python 3 fix
+
 1.0dev
 ------
 - Initial Release
