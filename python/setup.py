@@ -33,7 +33,7 @@ classifiers = ['Development Status :: 4 - Beta',
                'Topic :: System :: Hardware']
 
 setup(name		= 'st7036',
-	version		= '1.3dev',
+	version		= '1.4dev',
 	author		= 'Jonathan Williamson',
 	author_email	= 'jon@pimoroni.com',
 	description	= 'Raspberry Pi ST7036 SPI Driver',
@@ -43,5 +43,5 @@ setup(name		= 'st7036',
 	url		= 'http://www.pimoroni.com',
 	classifiers     = classifiers,
 	py_modules	= ['st7036'],
-	install_requires= ['spidev']
+	install_requires= ['spi']
 )

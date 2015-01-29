@@ -1,6 +1,11 @@
 Change Log
 ==========
 
+1.4dev
+------
+- Migrated from spidev to spi as a pre-emptive fix to spidev breaking in 3.18+
+- Fixed row/column reversed bug in built-in test cycle
+
 1.3dev
 ------
 - Python 3 fix
