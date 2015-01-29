@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-import spi, time
+import spidev, time
 import RPi.GPIO as GPIO
 
 COMMAND_CLEAR = 0x01
@@ -16,10 +16,10 @@ class st7036():
         GPIO.setmode(GPIO.BCM)
         GPIO.setwarnings(False)
 
-        self.spi = spi.SPI("/dev/spidev0.{}".format(spi_chip_select))
-        self.spi.speed = 1000000
-        self.spi.bits_per_word = 8
-        
+        self.spi = spidev.SpiDev()
+        self.spi.open(0, spi_chip_select)
+        self.spi.max_speed_hz = 1000000
+
         self.row_offsets = ([0x00], [0x00, 0x40], [0x00, 0x10, 0x20])[rows - 1]
         self.rows = rows
         self.columns = columns
@@ -132,7 +132,7 @@ class st7036():
         GPIO.output(self.register_select_pin, GPIO.HIGH)
 
         for i in [ord(char) for char in value]:
-            self.spi.write([i])
+            self.spi.xfer([i])
             time.sleep(0.00005)
         
     def create_animation(self, anim_pos, anim_map, frame_rate):
@@ -162,7 +162,7 @@ class st7036():
 
     def _write_char(self, value):
         GPIO.output(self.register_select_pin, GPIO.HIGH)
-        self.spi.write([value])
+        self.spi.xfer([value])
 
         time.sleep(0.0001) #0.00005
 
@@ -170,12 +170,12 @@ class st7036():
         GPIO.output(self.register_select_pin, GPIO.LOW)
 
         # select correct instruction set
-        self.spi.write([self.instruction_set_template | instruction_set])
+        self.spi.xfer([self.instruction_set_template | instruction_set])
 
         time.sleep(0.00005)
 
         # switch to command-mode
-        self.spi.write([value])
+        self.spi.xfer([value])
 
         time.sleep(0.00005)
 
@@ -223,11 +223,11 @@ if __name__ == "__main__":
     for i in range(50):
         row = random.randint(0, 3 - 1)
         column = random.randint(0, 16 - 1)
-        print("Row:{} Column:{}".format(row, column))
-        lcd.set_cursor_position(column, row)
+
+        lcd.set_cursor_position(row, column)
         lcd.write(chr(0b01101111))
         time.sleep(.10)  
-        lcd.set_cursor_position(column, row)
+        lcd.set_cursor_position(row, column)
         lcd.write(" ")
     
 
