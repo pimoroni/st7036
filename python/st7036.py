@@ -224,10 +224,10 @@ if __name__ == "__main__":
         row = random.randint(0, 3 - 1)
         column = random.randint(0, 16 - 1)
 
-        lcd.set_cursor_position(row, column)
+        lcd.set_cursor_position(column, row)
         lcd.write(chr(0b01101111))
         time.sleep(.10)  
-        lcd.set_cursor_position(row, column)
+        lcd.set_cursor_position(column, row)
         lcd.write(" ")
     
 
