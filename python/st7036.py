@@ -172,12 +172,12 @@ class st7036():
         # select correct instruction set
         self.spi.xfer([self.instruction_set_template | instruction_set])
 
-        time.sleep(0.00005)
+        time.sleep(0.00006)
 
         # switch to command-mode
         self.spi.xfer([value])
 
-        time.sleep(0.00005)
+        time.sleep(0.00006)
 
 if __name__ == "__main__":
     print("st7036 test cycles")
