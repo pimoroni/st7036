@@ -3,8 +3,11 @@
 import spidev, time
 import RPi.GPIO as GPIO
 
-COMMAND_CLEAR = 0x01
-COMMAND_HOME = 0x02
+COMMAND_CLEAR  = 0b00000001
+COMMAND_HOME   = 0b00000010
+COMMAND_SCROLL = 0b00010000
+COMMAND_DOUBLE = 0b00010000
+COMMAND_BIAS   = 0b00010100
 COMMAND_SET_DISPLAY_MODE = 0b00001000
 
 BLINK_ON   = 0b00000001
@@ -31,20 +34,26 @@ class st7036():
 
         self.register_select_pin = register_select_pin
         self.instruction_set_template = instruction_set_template
+
+        self._enabled = True
+        self._cursor_enabled = False
+        self._cursor_blink = False
         self._double_height = 0
 
         self.animations = []*8
 
-        self.set_display_mode()
+        self.update_display_mode()
 
         # set entry mode (no shift, cursor direction)        
         self._write_command(0b00000100 | 0b00000010)
 
-        # ???
-        self._write_command(0x1D, 1)
+        self.set_bias(1)
 
         self.set_contrast(40)
         self.clear()
+
+    def set_bias(self, bias=1):
+        self._write_command(COMMAND_BIAS | (bias << 4) | 1, 1)
 
     def set_contrast(self, contrast):
         """ 
@@ -79,11 +88,25 @@ class st7036():
             cursor (boolean): show cursor
             blink (boolean): blink cursor (if shown)
         """            
+        self._enabled = enable
+        self._cursor_enabled = cursor
+        self._cursor_blink = blink
+        self.update_display_mode()
+
+    def update_display_mode(self):
         mask  = COMMAND_SET_DISPLAY_MODE
-        mask |= DISPLAY_ON if enable == True else 0
-        mask |= CURSOR_ON if cursor == True else 0
-        mask |= BLINK_ON if blink == True else 0      
+        mask |= DISPLAY_ON if self._enabled == True else 0
+        mask |= CURSOR_ON if self._cursor_enabled == True else 0
+        mask |= BLINK_ON if self._cursor_blink == True else 0      
         self._write_command(mask)
+
+    def enable_cursor(self, cursor=False):
+        self._cursor_enabled = cursor
+        self.update_display_mode()
+
+    def enable_blink(self, blink=False):
+        self._cursor_blink = blink
+        self.update_display_mode()
 
     def set_cursor_offset(self, offset):
         """ 
@@ -163,19 +186,22 @@ class st7036():
 
         self.set_display_mode()
 
-    def scroll_off(self):
-        self._write_command(0b00010000,0)
+    def cursor_left(self):
+        self._write_command(COMMAND_SCROLL,0)
+    
+    def cursor_right(self):
+        self._write_command(COMMAND_SCROLL | (1 << 2),0)
 
-    def scroll_left(self):
-        self._write_command(0b00011000,0) # 0x18
+    def shift_left(self):
+        self._write_command(COMMAND_SCROLL | (1 << 3),0) # 0x18
 
-    def scroll_right(self):
-        self._write_command(0b00011100,0) # 0x1C
+    def shift_right(self):
+        self._write_command(COMMAND_SCROLL | (1 << 3) | (1 << 2),0) # 0x1C
 
     def double_height(self, enable=0, position=1):
         self._double_height = enable
         self._write_instruction_set(0)
-        self._write_command(0b00010000 | (position << 3), 2)
+        self._write_command(COMMAND_DOUBLE | (position << 3), 2)
     
     def _write_char(self, value):
         GPIO.output(self.register_select_pin, GPIO.HIGH)
