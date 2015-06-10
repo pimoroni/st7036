@@ -7,9 +7,11 @@ COMMAND_CLEAR = 0x01
 COMMAND_HOME = 0x02
 COMMAND_SET_DISPLAY_MODE = 0b00001000
 
-BLINK_ON = 0b00000001
+BLINK_ON   = 0b00000001
 CURSOR_ON  = 0b00000010
 DISPLAY_ON = 0b00000100
+TOP    = 1
+BOTTOM = 0
 
 class st7036():
     def __init__(self, register_select_pin, rows=3, columns=16, spi_chip_select=0, instruction_set_template=0b00111000):
@@ -29,6 +31,7 @@ class st7036():
 
         self.register_select_pin = register_select_pin
         self.instruction_set_template = instruction_set_template
+        self._double_height = 0
 
         self.animations = []*8
 
@@ -160,19 +163,36 @@ class st7036():
 
         self.set_display_mode()
 
+    def scroll_off(self):
+        self._write_command(0b00010000,0)
+
+    def scroll_left(self):
+        self._write_command(0b00011000,0) # 0x18
+
+    def scroll_right(self):
+        self._write_command(0b00011100,0) # 0x1C
+
+    def double_height(self, enable=0, position=1):
+        self._double_height = enable
+        self._write_instruction_set(0)
+        self._write_command(0b00010000 | (position << 3), 2)
+    
     def _write_char(self, value):
         GPIO.output(self.register_select_pin, GPIO.HIGH)
         self.spi.xfer([value])
 
-        time.sleep(0.0001) #0.00005
+        time.sleep(0.0001)
+   
+    def _write_instruction_set(self, instruction_set=0):
+        GPIO.output(self.register_select_pin, GPIO.LOW)
+        self.spi.xfer([self.instruction_set_template | instruction_set | (self._double_height << 2)])
+        time.sleep(0.00006)
 
     def _write_command(self, value, instruction_set=0):
         GPIO.output(self.register_select_pin, GPIO.LOW)
 
         # select correct instruction set
-        self.spi.xfer([self.instruction_set_template | instruction_set])
-
-        time.sleep(0.00006)
+        self._write_instruction_set(instruction_set)
 
         # switch to command-mode
         self.spi.xfer([value])
@@ -229,49 +249,4 @@ if __name__ == "__main__":
         time.sleep(.10)  
         lcd.set_cursor_position(column, row)
         lcd.write(" ")
-    
-
-
-
-
-
-
-
-
-# UNPORTED METHODS
-
-# def scrollDisplayLeft(self):
-#     self.setInstructionSet(0)
-#     self.writeCommand(DOG_LCD_SCROLL_LEFT,30) # 0x18
-
-# def scrollDisplayRight(self):
-#     self.setInstructionSet(0)
-#     self.writeCommand(DOG_LCD_SCROLL_RIGHT,30) # 0x1C
-
-# def leftToRight(self):
-#     self.entryMode|=0x02
-#     self.writeCommand(self.entryMode,30)
-
-# def rightToLeft(self):
-#     self.entryMode&=~0x02
-#     self.writeCommand(self.entryMode,30)
-
-# def autoScroll(self):
-#     self.entryMode|=0x01
-#     self.writeCommand(self.entryMode,30)
-
-# def noAutoscroll(self):
-#     self.entryMode&=~0x01
-#     self.writeCommand(self.entryMode,30)
-
-# def doubleHeight(self):
-#     self.writeCommand(0b00100110,30)
-
-# def noDoubleHeight(self):
-#     self.writeCommand(0b00100001,30)
-
-# def doubleHeightTop(self):
-#     self.writeCommand(0b00011000,30)
-
-# def doubleHeightBottom(self):
-#     self.writeCommand(0b00010000,30)
+   
