@@ -17,7 +17,7 @@ TOP    = 1
 BOTTOM = 0
 
 class st7036():
-    def __init__(self, register_select_pin, rows=3, columns=16, spi_chip_select=0, instruction_set_template=0b00111000):
+    def __init__(self, register_select_pin, reset_pin=None, rows=3, columns=16, spi_chip_select=0, instruction_set_template=0b00111000):
         GPIO.setmode(GPIO.BCM)
         GPIO.setwarnings(False)
 
@@ -25,9 +25,17 @@ class st7036():
         self.spi.open(0, spi_chip_select)
         self.spi.max_speed_hz = 1000000
 
+        self.reset_pin = reset_pin
         self.row_offsets = ([0x00], [0x00, 0x40], [0x00, 0x10, 0x20])[rows - 1]
         self.rows = rows
         self.columns = columns
+
+        if not self.reset_pin == None:
+            GPIO.setup(self.reset_pin,  GPIO.OUT)
+            GPIO.output(self.reset_pin, GPIO.LOW)
+            time.sleep(0.001)
+            GPIO.output(self.reset_pin, GPIO.HIGH)
+            time.sleep(0.001)
 
         GPIO.setup(register_select_pin, GPIO.OUT)
         GPIO.output(register_select_pin, GPIO.HIGH)
@@ -51,6 +59,12 @@ class st7036():
 
         self.set_contrast(40)
         self.clear()
+
+    def reset(self):
+        if not self.reset_pin == None:
+            GPIO.output(self.reset_pin, GPIO.LOW)
+            time.sleep(0.001)
+            GPIO.output(self.reset_pin, GPIO.HIGH)
 
     def set_bias(self, bias=1):
         self._write_command(COMMAND_BIAS | (bias << 4) | 1, 1)
