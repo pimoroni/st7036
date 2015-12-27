@@ -23,7 +23,7 @@ SOFTWARE.
 
 from distutils.core import setup
 
-classifiers = ['Development Status :: 4 - Beta',
+classifiers = ['Development Status :: 5 - Production/Stable',
                'Operating System :: POSIX :: Linux',
                'License :: OSI Approved :: MIT License',
                'Intended Audience :: Developers',
@@ -34,7 +34,7 @@ classifiers = ['Development Status :: 4 - Beta',
                'Topic :: System :: Hardware']
 
 setup(name		= 'st7036',
-	version		= '1.3.1dev',
+	version		= '1.4.0',
 	author		= 'Jonathan Williamson',
 	author_email	= 'jon@pimoroni.com',
 	description	= 'Raspberry Pi ST7036 SPI Driver',
