@@ -56,7 +56,7 @@ class st7036():
         self._cursor_blink = False
         self._double_height = 0
 
-        self.animations = []*8
+        self.animations = [None]*8
 
         self.update_display_mode()
 
@@ -184,13 +184,29 @@ class st7036():
             time.sleep(0.00005)
 
     def create_animation(self, anim_pos, anim_map, frame_rate):
+        """Creates an animation in a given custom character slot
+
+        Args:
+            anim_pos (int): Character slot from 0 to 7 where current animation frame should be store on LCD
+            anim_map: A list of custom character definitions. Each definition should be a list of 8 bytes describing the custom character for that frame,
+            frame_rate: Speed of animation in frames-per-second
+        """
+        if anim_pos >= len(self.animations):
+            raise ValueError("Valid animation positions are 0 to 7")
+
+        if type(anim_map) is not list:
+            raise ValueError("Animation map should be a list of animation frames")
+
+        if type(anim_map[0]) is not list or len(anim_map[0]) < 8:
+            raise ValueError("Animation frames should be lists of 8 bytes")
+
         self.create_char(anim_pos, anim_map[0])
         self.animations[anim_pos] = [anim_map, frame_rate]
         self.set_cursor_position(0, 1)
 
     def update_animations(self):
         for i, animation in enumerate(self.animations):
-            if len(animation) == 2:
+            if animation is not None and len(animation) == 2:
                 anim = animation[0]
                 fps = animation[1]
                 frame = anim[int(round(time.time()*fps) % len(anim))]
