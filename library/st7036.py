@@ -1,8 +1,13 @@
-#!/usr/bin/env python
-
-import spidev
 import time
 import RPi.GPIO as GPIO
+
+try:
+    import spidev
+except ImportError:
+    if sys.version_info[0] < 3:
+        exit("This library requires python-spidev\nInstall with: sudo apt-get install python-spidev")
+    elif sys.version_info[0] == 3:
+        exit("This library requires python3-spidev\nInstall with: sudo apt-get install python3-spidev")
 
 COMMAND_CLEAR = 0b00000001
 COMMAND_HOME = 0b00000010
