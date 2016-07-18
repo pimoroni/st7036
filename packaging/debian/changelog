@@ -1,0 +1,43 @@
+st7036 (1.4.1) UNRELEASED; urgency=low
+
+  * Removed hard dependency upon spidev, added message at runtime
+
+ -- Phil Howard <phil@pimoroni.com>  Mon, 18 Jul 2016 00:00:00 +0000
+
+st7036 (1.4.0) UNRELEASED; urgency=low
+
+  * Moved to Stable status
+  * Added reset_pin support for Display-o-Tron HAT
+
+ -- Phil Howard <phil@pimoroni.com>  Wed, 12 Aug 2015 00:00:00 +0000
+
+st7036 (1.3.1) UNRELEASED; urgency=low
+
+  * Fractional additional delay to prevent weirdness on Pi 2
+
+ -- Phil Howard <phil@pimoroni.com>  Thu, 19 Feb 2015 00:00:00 +0000
+
+st7036 (1.3.0) UNRELEASED; urgency=low
+
+  * Python 3 fix
+
+ -- Phil Howard <phil@pimoroni.com>  Mon, 03 Nov 2014 00:00:00 +0000
+
+st7036 (1.2.0) UNRELEASED; urgency=low
+
+  * Added "home" to reset cursor position
+  * Call "home" after "clear"
+
+ -- Phil Howard <phil@pimoroni.com>  Mon, 08 Sep 2014 12:00:00 +0000
+
+st7036 (1.1.0) UNRELEASED; urgency=low
+
+  * Animation/custom char support
+
+ -- Phil Howard <phil@pimoroni.com>  Mon, 08 Sep 2014 00:00:00 +0000
+
+st7036 (1.0.0) UNRELEASED; urgency=low
+
+  * Initial release
+
+ -- Jonathan Williamson <jon@pimoroni.com>  Wed, 06 Aug 2014 00:00:00 +0000
