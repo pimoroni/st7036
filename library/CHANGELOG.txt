@@ -3,7 +3,8 @@ Change Log
 
 1.4.1
 
-* Removed hard dependancy upon spidev, added message at runtime
+* Added LICENSE.txt
+* Removed interpreter declaration
 
 1.4.0
 

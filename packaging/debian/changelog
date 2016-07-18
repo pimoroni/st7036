@@ -1,8 +1,9 @@
 st7036 (1.4.1) UNRELEASED; urgency=low
 
-  * Removed hard dependency upon spidev, added message at runtime
+  * Added LICENSE.txt
+  * Removed interpreter declaration
 
- -- Phil Howard <phil@pimoroni.com>  Mon, 18 Jul 2016 00:00:00 +0000
+ -- Phil Howard <phil@pimoroni.com>  Tue, 19 Jul 2016 00:00:00 +0000
 
 st7036 (1.4.0) UNRELEASED; urgency=low
 

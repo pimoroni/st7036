@@ -46,5 +46,6 @@ setup(name		= 'st7036',
 	keywords	= 'Raspberry Pi ST7036 SPI',
 	url		= 'http://www.pimoroni.com',
 	classifiers     = classifiers,
-	py_modules	= ['st7036']
+	py_modules	= ['st7036'],
+	install_requires= ['spidev']
 )
