@@ -7,7 +7,8 @@ Change Log
 
 1.4.0
 
-* Promoted to stable
+* Moved to Stable status
+* Added reset_pin support for Display-o-Tron HAT
 
 1.3.1
 
@@ -24,7 +25,7 @@ Change Log
 
 1.1.0
 
-* Animation/custom char suport
+* Animation/custom char support
 
 1.0.0
 
