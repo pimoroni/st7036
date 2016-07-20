@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+
 """
 Copyright (c) 2014 Pimoroni
 
@@ -36,16 +37,17 @@ classifiers = ['Development Status :: 5 - Production/Stable',
                'Topic :: Software Development',
                'Topic :: System :: Hardware']
 
-setup(name		= 'st7036',
-	version		= '1.4.0',
-	author		= 'Jonathan Williamson',
-	author_email	= 'jon@pimoroni.com',
-	description	= 'Raspberry Pi ST7036 SPI Driver',
-	long_description= open('README.md').read() + open('CHANGELOG.txt').read(),
-	license		= 'MIT',
-	keywords	= 'Raspberry Pi ST7036 SPI',
-	url		= 'http://www.pimoroni.com',
-	classifiers     = classifiers,
-	py_modules	= ['st7036'],
-	install_requires= ['spidev']
+setup(
+    name            = 'st7036',
+    version         = '1.4.1',
+    author          = 'Jonathan Williamson',
+    author_email    = 'jon@pimoroni.com',
+    description     = 'Raspberry Pi ST7036 SPI Driver',
+    long_description= open('README.txt').read() + open('CHANGELOG.txt').read(),
+    license         = 'MIT',
+    keywords        = 'Raspberry Pi ST7036 SPI',
+    url             = 'http://www.pimoroni.com',
+    classifiers     = classifiers,
+    py_modules      = ['st7036'],
+    install_requires= ['spidev']
 )

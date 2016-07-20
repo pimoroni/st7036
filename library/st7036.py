@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 import spidev
 import time
 import RPi.GPIO as GPIO
