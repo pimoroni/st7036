@@ -1,0 +1,9 @@
+README
+
+Python library to help control the ST7036 LCD driver. The ST7036 is a dot-matrix liquid crystal display controller. Supports communication over spi only.  
+
+IMPORTANT
+
+the st7036 library requires spi.
+To enable run `curl get.pimoroni.com/spi | bash`
+or use raspi-config and reboot your Raspberry Pi.
