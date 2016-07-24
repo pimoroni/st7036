@@ -49,5 +49,5 @@ setup(
     url             = 'http://www.pimoroni.com',
     classifiers     = classifiers,
     py_modules      = ['st7036'],
-    install_requires= ['spidev']
+    install_requires= ['spidev', 'RPi.GPIO']
 )
