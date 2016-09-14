@@ -1,3 +1,9 @@
+st7036 (1.4.2) UNRELEASED; urgency=low
+
+  * Added necessary delay to home/clear to avoid the following commands being dropped
+
+ -- Phil Howard <phil@pimoroni.com>  Wed, 14 Sep 2016 00:00:00 +0000
+
 st7036 (1.4.1) UNRELEASED; urgency=low
 
   * Added LICENSE.txt
