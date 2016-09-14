@@ -164,6 +164,8 @@ class st7036():
 
         self._write_command(0b10000000 | offset)
 
+        time.sleep(0.0015) # Allow at least 1.08ms for command to execute
+
     def home(self):
         """
         Sets the cursor position to 0,0
@@ -175,6 +177,7 @@ class st7036():
         Clears the display and resets the cursor.
         """
         self._write_command(COMMAND_CLEAR)
+        time.sleep(0.0015) # Allow at least 1.08ms for clear command to execute
         self.home()
 
     def write(self, value):
