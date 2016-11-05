@@ -1,14 +1,15 @@
 import time
+import sys
 
 try:
     import spidev
 except ImportError:
-    exit("This library requires the spidev module\nInstall with: sudo pip install spidev")
+    sys.exit("This library requires the spidev module\nInstall with: sudo pip install spidev")
 
 try:
     import RPi.GPIO as GPIO
 except ImportError:
-    exit("This library requires the RPi.GPIO module\nInstall with: sudo pip install RPi.GPIO")
+    sys.exit("This library requires the RPi.GPIO module\nInstall with: sudo pip install RPi.GPIO")
 
 
 COMMAND_CLEAR = 0b00000001

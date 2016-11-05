@@ -5,6 +5,7 @@ import socket
 import struct
 import threading
 import time
+from sys import exit
 
 try:
     import psutil
