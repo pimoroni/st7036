@@ -11,6 +11,7 @@ try:
 except ImportError:
     sys.exit("This library requires the RPi.GPIO module\nInstall with: sudo pip install RPi.GPIO")
 
+__version__ = '1.4.3'
 
 COMMAND_CLEAR = 0b00000001
 COMMAND_HOME = 0b00000010
