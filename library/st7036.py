@@ -156,7 +156,7 @@ class st7036():
         Args:
             column (int): column to move the cursor to
             row (int): row to move the cursor to
-       Raises:
+        Raises:
             ValueError: if row and column are not within defined screen size
         """
         if row not in range(self.rows) or column not in range(self.columns):
@@ -214,7 +214,6 @@ class st7036():
 
         self.create_char(anim_pos, anim_map[0])
         self.animations[anim_pos] = [anim_map, frame_rate]
-        self.set_cursor_position(0, 1)
 
     def update_animations(self):
         for i, animation in enumerate(self.animations):
@@ -223,7 +222,6 @@ class st7036():
                 fps = animation[1]
                 frame = anim[int(round(time.time()*fps) % len(anim))]
                 self.create_char(i, frame)
-        self.set_cursor_position(0, 1)
 
     def create_char(self, char_pos, char_map):
         if char_pos < 0 or char_pos > 7:
@@ -234,7 +232,7 @@ class st7036():
             self._write_command((0x40 | (baseAddress+i)))
             self._write_char(char_map[i])
 
-        self.set_display_mode()
+        self.home()
 
     def cursor_left(self):
         self._write_command(COMMAND_SCROLL, 0)
