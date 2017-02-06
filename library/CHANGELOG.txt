@@ -1,3 +1,8 @@
+1.4.4
+-----
+
+* Bugfix: Set cursor position after creating char
+
 1.4.3
 -----
 
