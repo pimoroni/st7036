@@ -12,7 +12,7 @@ Package: python-st7036
 Architecture: all
 Section: python
 Depends: ${misc:Depends}, ${python:Depends}, python-rpi.gpio, python-spidev
-Description: python library to help control the ST7036 LCD driver.
+Description: Python library for the ST7036 LCD driver.
  The ST7036 is a dot-matrix liquid crystal display controller.
  Supports communication over spi only. 
  .
@@ -22,7 +22,7 @@ Package: python3-st7036
 Architecture: all
 Section: python
 Depends: ${misc:Depends}, ${python3:Depends}, python3-rpi.gpio, python3-spidev
-Description: python library to help control the ST7036 LCD driver.
+Description: Python library for the ST7036 LCD driver.
  The ST7036 is a dot-matrix liquid crystal display controller.
  Supports communication over spi only. 
  .
