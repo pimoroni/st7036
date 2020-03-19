@@ -4,12 +4,12 @@ import sys
 try:
     import spidev
 except ImportError:
-    sys.exit("This library requires the spidev module\nInstall with: sudo pip install spidev")
+    raise RuntimeError("This library requires the spidev module\nInstall with: sudo pip install spidev")
 
 try:
     import RPi.GPIO as GPIO
 except ImportError:
-    sys.exit("This library requires the RPi.GPIO module\nInstall with: sudo pip install RPi.GPIO")
+    raise RuntimeError("This library requires the RPi.GPIO module\nInstall with: sudo pip install RPi.GPIO")
 
 __version__ = '1.4.4'
 
@@ -25,6 +25,7 @@ CURSOR_ON = 0b00000010
 DISPLAY_ON = 0b00000100
 TOP = 1
 BOTTOM = 0
+
 
 class st7036():
     def __init__(self,
@@ -48,7 +49,7 @@ class st7036():
         self.columns = columns
 
         if self.reset_pin is not None:
-            GPIO.setup(self.reset_pin,  GPIO.OUT)
+            GPIO.setup(self.reset_pin, GPIO.OUT)
             GPIO.output(self.reset_pin, GPIO.LOW)
             time.sleep(0.001)
             GPIO.output(self.reset_pin, GPIO.HIGH)
@@ -65,7 +66,7 @@ class st7036():
         self._cursor_blink = False
         self._double_height = 0
 
-        self.animations = [None]*8
+        self.animations = [None] * 8
 
         self.update_display_mode()
 
@@ -166,7 +167,7 @@ class st7036():
 
         self._write_command(0b10000000 | offset)
 
-        time.sleep(0.0015) # Allow at least 1.08ms for command to execute
+        time.sleep(0.0015)  # Allow at least 1.08ms for command to execute
 
     def home(self):
         """
@@ -179,7 +180,7 @@ class st7036():
         Clears the display and resets the cursor.
         """
         self._write_command(COMMAND_CLEAR)
-        time.sleep(0.0015) # Allow at least 1.08ms for clear command to execute
+        time.sleep(0.0015)  # Allow at least 1.08ms for clear command to execute
         self.home()
 
     def write(self, value):
@@ -220,16 +221,16 @@ class st7036():
             if animation is not None and len(animation) == 2:
                 anim = animation[0]
                 fps = animation[1]
-                frame = anim[int(round(time.time()*fps) % len(anim))]
+                frame = anim[int(round(time.time() * fps) % len(anim))]
                 self.create_char(i, frame)
 
     def create_char(self, char_pos, char_map):
         if char_pos < 0 or char_pos > 7:
             return False
 
-        baseAddress = char_pos*8
+        baseAddress = char_pos * 8
         for i in range(0, 8):
-            self._write_command((0x40 | (baseAddress+i)))
+            self._write_command((0x40 | (baseAddress + i)))
             self._write_char(char_map[i])
 
         self.home()
@@ -241,10 +242,10 @@ class st7036():
         self._write_command(COMMAND_SCROLL | (1 << 2), 0)
 
     def shift_left(self):
-        self._write_command(COMMAND_SCROLL | (1 << 3), 0) # 0x18
+        self._write_command(COMMAND_SCROLL | (1 << 3), 0)  # 0x18
 
     def shift_right(self):
-        self._write_command(COMMAND_SCROLL | (1 << 3) | (1 << 2), 0) # 0x1C
+        self._write_command(COMMAND_SCROLL | (1 << 3) | (1 << 2), 0)  # 0x1C
 
     def double_height(self, enable=0, position=1):
         self._double_height = enable
@@ -273,11 +274,10 @@ class st7036():
 
         time.sleep(0.00006)
 
+
 if __name__ == "__main__":
     print("st7036 test cycles")
 
-    import time
-    import sys
     import os
     import random
 
@@ -293,7 +293,7 @@ if __name__ == "__main__":
     for i in range(48):
         lcd.set_cursor_offset(i)
         time.sleep(.05)
-        lcd.write(chr(i+65))
+        lcd.write(chr(i + 65))
         time.sleep(.02)
 
     print(">> cycle character set")
@@ -313,7 +313,7 @@ if __name__ == "__main__":
     for i in reversed(range(0x40)):
         lcd.set_contrast(i)
         time.sleep(0.02)
-        
+
     lcd.set_contrast(40)
     lcd.clear()
 
